@@ -1,4 +1,4 @@
-工作區建立
+# DeltaControl工作區建立
 
 colcon build
 source install/setup.bash
@@ -16,5 +16,5 @@ ros2 topic pub /removed_cords std_msgs/msg/UInt16MultiArray "{
     data_offset: 0
   },
   data: [320, 240, 400, 300]
-}"# DeltaControl
-# DeltaControl
+}"
+
