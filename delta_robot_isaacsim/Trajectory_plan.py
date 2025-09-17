@@ -39,6 +39,9 @@ class TrajectoryPlanNode(Node):
         self.declare_parameter('K', [0.0])
         self.declare_parameter('D', [0.0])
         self.declare_parameter('rvec', [0.0])
+        self.declare_parameter('offset_x', 0.0)
+        self.declare_parameter('offset_y', 0.0)
+        self.declare_parameter('offset_z', 0.0)
 
     def _init_variables(self):
         """取得ROS2參數"""
@@ -50,18 +53,23 @@ class TrajectoryPlanNode(Node):
             'K').get_parameter_value().double_array_value
         rvec = self.get_parameter(
             'rvec').get_parameter_value().double_array_value
+        offset_x = self.get_parameter('offset_x').get_parameter_value().double_value
+        offset_y = self.get_parameter('offset_y').get_parameter_value().double_value
+        offset_z = self.get_parameter('offset_z').get_parameter_value().double_value
         # self.tvec = self._get_camera2delta_tf()
 
         self.delta_working_level = np.array(delta_working_level)
         self.D = np.array(D)
         self.K = np.array(K).reshape(3, 3)  # 相機內參矩陣通常是 3x3
         self.rvec = np.array(rvec)
+        self.offset = np.array([offset_x, offset_y, offset_z])
 
         # 印出參數值確認
         self.get_logger().info(f'Delta工作高度: {self.delta_working_level}')
         self.get_logger().info(f'畸變矩陣: {self.D}')
         self.get_logger().info(f'相機矩陣: {self.K}')
         self.get_logger().info(f'剛體旋轉矩陣: {self.rvec}')
+        self.get_logger().info(f'座標偏移量: {self.offset}')
 
     def _get_camera2delta_tf(self):
         """取得D455f與Delta的平移向量"""
@@ -97,9 +105,9 @@ class TrajectoryPlanNode(Node):
         d455_relative_y = d455_tf.transform.translation.y - delta_center_y
         d455_relative_z = d455_tf.transform.translation.z - delta_center_z
 
-        tvec = np.array([d455_relative_x * 1000,
-                         d455_relative_y * 1000,
-                         d455_relative_z * 1000], dtype=np.float32)
+        tvec = np.array([d455_relative_x * 1,
+                         d455_relative_y * 1,
+                         d455_relative_z * 1], dtype=np.float32)
         return tvec
 
     def cords_callback(self, msg):
@@ -123,7 +131,7 @@ class TrajectoryPlanNode(Node):
 
         delta_cords = self.__trajectory_plan(target_crods)
 
-        # self.get_logger().info(f"發佈轉換後去除目標點{delta                                              _cords}")
+        # self.get_logger().info(f"發佈轉換後去除目標點{delta_cords}")
         self.__publish_target_cords(delta_cords)
 
     def __transform_pixel2delta(self, pixel_cord):
@@ -165,9 +173,10 @@ class TrajectoryPlanNode(Node):
         # delta_cord = np.dot(R, cam_cord) + self.tvec
         delta_cord = np.dot(R.T, cam_cord - self.tvec)
 
-        delta_cord[0] = delta_cord[0] + 15
-        delta_cord[1] = delta_cord[1] - 15
-        delta_cord[2] = -cam_cord[2]-30
+        # 應用可配置的偏移量
+        delta_cord[0] = delta_cord[0] + self.offset[0]
+        delta_cord[1] = delta_cord[1] + self.offset[1]
+        delta_cord[2] = -cam_cord[2] + self.offset[2]
 
         # self.get_logger().info(
         # f"Delta coord: [{delta_cord[0]:.2f}, {delta_cord[1]:.2f}, {delta_cord[2]:.2f}]")

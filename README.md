@@ -31,13 +31,13 @@ ros2 launch delta_robot_isaacsim delta_robot.launch.py
 ros2 topic pub /removed_cords std_msgs/msg/UInt16MultiArray "{
   layout: {
     dim: [
-      {label: 'group', size: 2, stride: 4},
+      {label: 'group', size: 6, stride: 12},
       {label: 'coordinate', size: 2, stride: 2}
     ],
     data_offset: 0
   },
-  data: [320, 240, 400, 300]
-}"
+  data: [500, 360, 640, 360, 780, 360, 640, 120, 640, 360, 640, 480]
+}" --once
 ```
 
 ## 3. 配置參數
