@@ -33,9 +33,9 @@ class DeltaKinematics:
         
         # 機器人參數
         self.RD_RF = 300     # 上臂長度，300mm
-        self.RD_RE = 730     # 下臂長度，730mm
-        self.RD_F = 334.641  # 固定平台半徑，334.641mm
-        self.RD_E = 207.846  # 移動平台半徑，207.846mm
+        self.RD_RE = 700     # 下臂長度，700mm
+        self.RD_F = 334.641  # 固定平台半徑，334.641mm 193.205
+        self.RD_E = 207.846  # 移動平台半徑，207.846mm 122.233
         
         # 計算常用值
         self.RD_RF_Pow2 = self.RD_RF * self.RD_RF
