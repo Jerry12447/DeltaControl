@@ -196,7 +196,7 @@ class TrajectoryPlanNode(Node):
 
         # 矩形範圍：x方向±400mm，y方向±300mm
         x_range = 400.0  # 800mm / 2
-        y_range = 300.0  # 600mm / 2
+        y_range = 350.0  # 700mm / 2
 
         if abs(x) <= x_range and abs(y) <= y_range:
             return True
