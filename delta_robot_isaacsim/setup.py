@@ -28,6 +28,7 @@ setup(
         'console_scripts': [
             'trajectory_plan = delta_robot_isaacsim.Trajectory_plan:main',
             'delta_control = delta_robot_isaacsim.delta_control:main',
+            'yoloboundingbox = delta_robot_isaacsim.yoloboundingbox:main',
         ],
     },
 )

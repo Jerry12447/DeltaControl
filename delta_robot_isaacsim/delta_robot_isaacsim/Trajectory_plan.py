@@ -279,7 +279,7 @@ class TrajectoryPlanNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = TrajectoryPlanNode()  # 或 TrajectoryPlanNode()
+    node = TrajectoryPlanNode()  
     
     try:
         rclpy.spin(node)
