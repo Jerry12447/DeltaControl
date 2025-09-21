@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>yolo</name>
+  <version>1.0.0</version>
+  <description>YOLO Object Detection Package for Delta Robot</description>
+  <maintainer email="c111104231@mkust.edu.tw">Jerry12447</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  
+  <!-- ROS2 核心依賴 -->
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>cv_bridge</depend>
+  
+  <!-- Python 依賴 -->
+  <depend>python3-opencv</depend>
+  <depend>python3-numpy</depend>
+  <depend>python3-ultralytics</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,26 @@
+# YOLO 物件檢測參數配置
+
+yolo_detection_node:
+  ros__parameters:
+    # 模型相關設定
+    model_path: "models/best.pt"
+    confidence_threshold: 0.5
+    iou_threshold: 0.45
+    
+    # 檢測類別設定
+    target_class: "Crop"
+    
+    # 影像處理設定
+    image_encoding: "bgr8"
+    
+    # 話題設定
+    input_topic: "/rgb"
+    output_topic: "/removed_cords"
+    execution_complete_topic: "delta_execution_complete"
+    
+    # 推論設定
+    verbose: false
+    device: "cpu"  #cuda 
+    
+    # 座標處理設定
+    coordinate_tolerance: 10  # 像素容差，用於判斷是否為同一點
