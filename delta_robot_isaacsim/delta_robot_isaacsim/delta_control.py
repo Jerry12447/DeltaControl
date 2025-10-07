@@ -8,7 +8,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
-from std_msgs.msg import Float32MultiArray, Bool
+from std_msgs.msg import Float32MultiArray, Bool, Float32
 from delta_robot_isaacsim.delta_motion import DeltaMotion, Point as DeltaPoint
 import math
 from rclpy.callback_groups import ReentrantCallbackGroup
@@ -46,6 +46,13 @@ class DeltaRobotController(Node):
             10
         )
         
+        # 新增夾爪控制發布者
+        self.finger_pub = self.create_publisher(
+            JointState,
+            '/finger',
+            10
+        )
+        
         # 初始化 joint state 消息
         self.joint_state = JointState()
         self.joint_state.name = ['part_reducer1________377', 'part_reducer2________334', 'part_reducer3________362']
@@ -53,15 +60,33 @@ class DeltaRobotController(Node):
         self.joint_state.velocity = [0.0, 0.0, 0.0]
         self.joint_state.effort = [0.0, 0.0, 0.0]
         
+        # 初始化夾爪 joint state 消息
+        self.finger_joint_state = JointState()
+        self.finger_joint_state.name = ['finger_joint']  # 夾爪關節名稱
+        self.finger_joint_state.position = [0.0]
+        self.finger_joint_state.velocity = [0.0]
+        self.finger_joint_state.effort = [0.0]
+        
         # 控制狀態
         self.is_executing = False
         self.hold_mode = False
+        self.startup_completed = False
+        
+        # 夾爪控制狀態（使用角度值）
+        self.finger_state = 0.0  # 當前夾爪角度（弧度）
+        self.finger_target_state = 0.0  # 目標夾爪角度（弧度）
+        self.finger_velocity = 0.01  # 夾爪移動速度（弧度/秒）
+        
+        # 夾爪控制（已移除延遲機制）
         
         # 創建定時器
         self.timer = self.create_timer(
             1.0 / self.motion_controller.control_frequency, 
             self.control_loop
         )
+        
+        # 啟動時移動到待命位置
+        self.startup_timer = self.create_timer(2.0, self.startup_sequence)  # 延遲2秒確保系統穩定
         
         self.get_logger().info("優化後的Delta機器人控制器已初始化完成")
     
@@ -136,8 +161,19 @@ class DeltaRobotController(Node):
                 
                 # 執行3點序列：上方(-775) → 目標(-825) → 拔起(-775)
                 for point_idx, point in enumerate(group_points):
-                    point_start_time = time.time()
+                    #point_start_time = time.time() 監看執行時間
                     self.get_logger().info(f"執行第 {group_idx + 1} 組第 {point_idx + 1} 點: X={point.X:.2f}, Y={point.Y:.2f}, Z={point.Z:.2f}")
+                    
+                    # 根據3點序列控制夾爪狀態
+                    if point_idx == 0:  # 上方位置 - 夾爪打開
+                        self.control_finger(0.0)  # 打開夾爪（0度）
+                        self.get_logger().info("到達上方位置，夾爪打開")
+                    elif point_idx == 1:  # 目標位置 - 夾爪保持打開
+                        # 夾爪保持打開狀態，不改變
+                        self.get_logger().info("到達目標位置，夾爪保持打開")
+                    elif point_idx == 2:  # 拔起位置 - 夾爪閉合
+                        self.control_finger(45.0)  # 閉合夾爪（45度）
+                        self.get_logger().info("到達拔起位置，夾爪閉合")
                     
                     # 計算逆運動學
                     angles = self.motion_controller.kinematics.inverse_kinematics(point)
@@ -160,11 +196,15 @@ class DeltaRobotController(Node):
                         self.is_executing = False
                         return False
                     
-                    point_execution_time = time.time() - point_start_time
-                    self.get_logger().info(f"第 {group_idx + 1} 組第 {point_idx + 1} 點執行完成，耗時: {point_execution_time:.2f} 秒")
+                    #point_execution_time = time.time() - point_start_time
+                    self.get_logger().info(f"第 {group_idx + 1} 組第 {point_idx + 1} 點執行完成")
                 
                 # 每組完成後移動到丟棄位置
                 self.get_logger().info(f"第 {group_idx + 1} 組完成，移動到丟棄位置...")
+                # 移動到丟棄位置時打開夾爪
+                self.control_finger(45.0)  # 打開夾爪（45度）
+                self.get_logger().info("移動到丟棄位置，夾爪打開")
+                
                 if not self.move_to_drop_position():
                     self.get_logger().error(f"第 {group_idx + 1} 組完成後移動到丟棄位置失敗")
                     self.is_executing = False
@@ -315,6 +355,47 @@ class DeltaRobotController(Node):
         complete_msg.data = True
         self.execution_complete_pub.publish(complete_msg)
         self.get_logger().info("發布執行完成狀態")
+    
+    def control_finger(self, target_angle_degrees):
+        """控制夾爪開合狀態（使用JointState消息，包含位置和速度）"""
+        # 將角度轉換為弧度
+        target_angle_radians = math.radians(target_angle_degrees)
+        
+        if target_angle_radians != self.finger_target_state:
+            self.finger_target_state = target_angle_radians
+            
+            # 更新夾爪關節狀態（同時包含位置和速度）
+            self.finger_joint_state.header.stamp = self.get_clock().now().to_msg()
+            self.finger_joint_state.position = [target_angle_radians]  # 目標位置
+            self.finger_joint_state.velocity = [self.finger_velocity]  # 移動速度
+            self.finger_joint_state.effort = [0.0]                     # 力矩設為0
+            
+            # 發布夾爪關節狀態
+            self.finger_pub.publish(self.finger_joint_state)
+            
+            state_text = "閉合" if target_angle_degrees == 0 else "打開"
+            self.get_logger().info(f"夾爪控制: {state_text} (角度: {target_angle_degrees}°, 弧度: {target_angle_radians:.3f}, 速度: {self.finger_velocity} rad/s)")
+            
+            # 更新當前夾爪狀態
+            self.finger_state = target_angle_radians
+
+    def startup_sequence(self):
+        """啟動序列：移動到待命位置並發布執行完成信號"""
+        if not self.startup_completed:
+            self.get_logger().info("開始啟動序列：移動到待命位置...")
+            
+            # 移動到待命位置
+            if self.move_to_standby_position():
+                self.get_logger().info("成功移動到待命位置，發布初始執行完成信號")
+                # 發布初始執行完成信號，觸發 YOLO 推論
+                self.publish_execution_complete()
+                self.startup_completed = True
+                self.hold_mode = True
+            else:
+                self.get_logger().error("啟動時移動到待命位置失敗")
+            
+            # 取消啟動定時器
+            self.startup_timer.cancel()
 
     def control_loop(self):
         """主控制迴路"""

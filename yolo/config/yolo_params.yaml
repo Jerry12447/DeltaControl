@@ -24,3 +24,7 @@ yolo_detection_node:
     
     # 座標處理設定
     coordinate_tolerance: 10  # 像素容差，用於判斷是否為同一點
+    
+    # 圖片儲存設定
+    save_images: true  # 是否儲存檢測結果圖片
+    data_folder: "data"  # 圖片儲存資料夾

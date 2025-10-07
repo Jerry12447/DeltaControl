@@ -23,9 +23,9 @@ class PositionManager:
     
     def __init__(self):
         # 待命位置座標 
-        self.standby_position = Point(300.0, 300.0, -775.0)
+        self.standby_position = Point(300.0, 300.0, -650.0)
         # 丟棄位置座標 
-        self.drop_position = Point(300.0, 300.0, -775.0)
+        self.drop_position = Point(300.0, 300.0, -650.0)
     
     def get_standby_position(self):
         """獲取待命位置"""

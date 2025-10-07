@@ -5,6 +5,8 @@ from std_msgs.msg import UInt16MultiArray, MultiArrayDimension, Bool
 from cv_bridge import CvBridge
 from ultralytics import YOLO
 import os
+import cv2
+from datetime import datetime
 from ament_index_python.packages import get_package_share_directory
 
 class YoloV8CropOnceNode(Node):
@@ -21,6 +23,8 @@ class YoloV8CropOnceNode(Node):
         self.declare_parameter('execution_complete_topic', 'delta_execution_complete')
         self.declare_parameter('verbose', False)
         self.declare_parameter('device', 'cpu')
+        self.declare_parameter('save_images', True)
+        self.declare_parameter('data_folder', 'data')
 
         # 讀取參數
         model_path_param = self.get_parameter('model_path').value
@@ -32,6 +36,8 @@ class YoloV8CropOnceNode(Node):
         execution_topic = self.get_parameter('execution_complete_topic').value
         self.verbose = self.get_parameter('verbose').value
         self.device = self.get_parameter('device').value
+        self.save_images = self.get_parameter('save_images').value
+        self.data_folder = self.get_parameter('data_folder').value
 
         # 獲取功能包路徑並構建模型完整路徑
         pkg_share = get_package_share_directory('yolo')
@@ -65,10 +71,14 @@ class YoloV8CropOnceNode(Node):
             self.execution_complete_callback,
             10)
 
-        # 旗標：是否已執行初始推論
-        self.initial_done = False
         # 旗標：是否需要執行推論
-        self.need_inference = False
+        self.need_inference = True  # 啟動時等待第一次觸發
+        
+        # 建立數據儲存目錄
+        if self.save_images:
+            self.data_path = os.path.join(pkg_share, self.data_folder)
+            os.makedirs(self.data_path, exist_ok=True)
+            self.get_logger().info(f"圖片儲存目錄: {self.data_path}")
 
         self.get_logger().info(f"YOLO 節點已啟動，監聽話題: {input_topic}, 發布話題: {output_topic}")
 
@@ -80,7 +90,8 @@ class YoloV8CropOnceNode(Node):
         names = results[0].names
         coords_list = []
 
-        # 篩選目標類別
+        # 篩選目標類別並繪製檢測框
+        annotated_frame = frame.copy()
         for box in results[0].boxes:
             cls_id = int(box.cls[0])
             label = names[cls_id]
@@ -88,7 +99,13 @@ class YoloV8CropOnceNode(Node):
                 xmin, ymin, xmax, ymax = box.xyxy[0].cpu().numpy()
                 cx = int((xmin + xmax) / 2)
                 cy = int((ymin + ymax) / 2)
-                coords_list.extend([cx, cy])  
+                coords_list.extend([cx, cy])
+                
+                # 繪製檢測框
+                cv2.rectangle(annotated_frame, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (0, 255, 0), 2)
+                cv2.circle(annotated_frame, (cx, cy), 5, (0, 0, 255), -1)
+                cv2.putText(annotated_frame, f"{label}: {box.conf[0]:.2f}", 
+                           (int(xmin), int(ymin) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)  
 
         # 建立訊息
         msg_out = UInt16MultiArray()
@@ -106,6 +123,10 @@ class YoloV8CropOnceNode(Node):
         self.publisher_.publish(msg_out)
         self.get_logger().info(f"已發布 Crop 中心點到 /removed_cords: {coords_list}")
         
+        # 儲存圖片結果
+        if self.save_images:
+            self.save_annotated_image(annotated_frame, coords_list)
+        
         return coords_list
 
     def image_callback(self, msg):
@@ -114,16 +135,29 @@ class YoloV8CropOnceNode(Node):
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         
         # 檢查是否需要執行推論
-        if not self.initial_done or self.need_inference:
+        if self.need_inference:
             # 進行推論
             coords_list = self.process_image(frame)
+            self.get_logger().info(f"推論結果已發布到 /removed_cords: {coords_list}")
+            self.need_inference = False
+
+    def save_annotated_image(self, annotated_frame, coords_list):
+        """儲存帶有檢測結果的圖片"""
+        try:
+            # 生成時間戳記文件名
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # 精確到毫秒
+            filename = f"yolo_detection_{timestamp}.jpg"
+            filepath = os.path.join(self.data_path, filename)
             
-            if not self.initial_done:
-                self.get_logger().info(f"啟動時推論結果已發布到 /removed_cords: {coords_list}")
-                self.initial_done = True
-            else:
-                self.get_logger().info(f"執行完成後推論結果已發布到 /removed_cords: {coords_list}")
-                self.need_inference = False
+            # 儲存圖片
+            cv2.imwrite(filepath, annotated_frame)
+            
+            # 記錄儲存資訊
+            coords_str = ", ".join([f"({coords_list[i]}, {coords_list[i+1]})" for i in range(0, len(coords_list), 2)])
+            self.get_logger().info(f"已儲存檢測結果圖片: {filename}, 檢測到 {len(coords_list)//2} 個作物, 座標: {coords_str}")
+            
+        except Exception as e:
+            self.get_logger().error(f"儲存圖片失敗: {e}")
 
     def execution_complete_callback(self, msg):
         """當收到 delta_execution_complete 時觸發推論"""

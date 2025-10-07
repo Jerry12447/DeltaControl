@@ -1,6 +1,6 @@
 trajectory_plan_node:
   ros__parameters:
-    delta_working_level: [-700.0, -825.0, -700.0]
+    delta_working_level: [-650.0, -700.0, -650.0]
     K: [634.08623997, 0.0, 640.0,
         0.0, 634.08623997, 360.0,
         0.0, 0.0, 1.0]
