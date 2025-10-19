@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 from glob import glob
 
-package_name = 'delta_robot_isaacsim'
+package_name = 'delta_firmware'
 
 setup(
     name=package_name,
@@ -17,7 +17,12 @@ setup(
         (os.path.join('share', package_name, 'config'),
          glob('config/*.yaml')),
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'numpy',
+        'opencv-python',
+        'cv-bridge'
+    ],
     zip_safe=True,
     maintainer='Your Name',
     maintainer_email='your@email.com',
@@ -26,9 +31,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'trajectory_plan = delta_robot_isaacsim.Trajectory_plan:main',
-            'delta_control = delta_robot_isaacsim.delta_control:main',
-            'yoloboundingbox = delta_robot_isaacsim.yoloboundingbox:main',
+            'trajectory_plan = delta_firmware.Trajectory_plan:main',
+            'delta_firmware_control = delta_firmware.delta_firmware_control:main',
+            'delta_firmware_api = delta_firmware.delta_firmware_api:main'
         ],
     },
 )

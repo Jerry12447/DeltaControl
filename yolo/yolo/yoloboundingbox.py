@@ -4,9 +4,8 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import UInt16MultiArray, MultiArrayDimension, Bool
 from cv_bridge import CvBridge
 from ultralytics import YOLO
-import os
 import cv2
-from datetime import datetime
+import os
 from ament_index_python.packages import get_package_share_directory
 
 class YoloV8CropOnceNode(Node):
@@ -20,11 +19,10 @@ class YoloV8CropOnceNode(Node):
         self.declare_parameter('target_class', 'Crop')
         self.declare_parameter('input_topic', '/rgb')
         self.declare_parameter('output_topic', '/removed_cords')
-        self.declare_parameter('execution_complete_topic', 'delta_execution_complete')
+        # 移除完成狀態相關參數
         self.declare_parameter('verbose', False)
         self.declare_parameter('device', 'cpu')
-        self.declare_parameter('save_images', True)
-        self.declare_parameter('data_folder', 'data')
+        # 移除圖片儲存相關參數
 
         # 讀取參數
         model_path_param = self.get_parameter('model_path').value
@@ -33,11 +31,10 @@ class YoloV8CropOnceNode(Node):
         self.target_class = self.get_parameter('target_class').value
         input_topic = self.get_parameter('input_topic').value
         output_topic = self.get_parameter('output_topic').value
-        execution_topic = self.get_parameter('execution_complete_topic').value
+        # 移除完成狀態相關變數
         self.verbose = self.get_parameter('verbose').value
         self.device = self.get_parameter('device').value
-        self.save_images = self.get_parameter('save_images').value
-        self.data_folder = self.get_parameter('data_folder').value
+        # 移除圖片儲存相關變數
 
         # 獲取功能包路徑並構建模型完整路徑
         pkg_share = get_package_share_directory('yolo')
@@ -64,23 +61,26 @@ class YoloV8CropOnceNode(Node):
             self.image_callback,
             10)
 
-        # 訂閱執行完成話題
-        self.execution_subscription = self.create_subscription(
+        # 訂閱批次完成信號
+        self.batch_complete_sub = self.create_subscription(
             Bool,
-            execution_topic,
-            self.execution_complete_callback,
-            10)
-
-        # 旗標：是否需要執行推論
-        self.need_inference = True  # 啟動時等待第一次觸發
+            '/batch_execution_complete',
+            self.batch_complete_callback,
+            10
+        )
         
-        # 建立數據儲存目錄
-        if self.save_images:
-            self.data_path = os.path.join(pkg_share, self.data_folder)
-            os.makedirs(self.data_path, exist_ok=True)
-            self.get_logger().info(f"圖片儲存目錄: {self.data_path}")
+        # 推論控制變數
+        self.need_inference = True  # 初始允許推論
+        
+        # 移除數據儲存目錄建立
 
         self.get_logger().info(f"YOLO 節點已啟動，監聽話題: {input_topic}, 發布話題: {output_topic}")
+
+    def batch_complete_callback(self, msg):
+        """批次完成信號回調函數"""
+        if msg.data:
+            self.need_inference = True
+            self.get_logger().info("收到批次執行完成信號，下次收到影像時進行推論...")
 
     def process_image(self, frame):
         """處理影像並進行推論的通用函數"""
@@ -123,47 +123,27 @@ class YoloV8CropOnceNode(Node):
         self.publisher_.publish(msg_out)
         self.get_logger().info(f"已發布 Crop 中心點到 /removed_cords: {coords_list}")
         
-        # 儲存圖片結果
-        if self.save_images:
-            self.save_annotated_image(annotated_frame, coords_list)
-        
         return coords_list
 
     def image_callback(self, msg):
-        """影像回調函數，持續接收影像"""
+        """影像回調函數，根據批次完成信號控制推論時機"""
+        # 只有在需要推論時才進行處理
+        if not self.need_inference:
+            return
+            
         # ROS2 Image -> OpenCV
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         
-        # 檢查是否需要執行推論
-        if self.need_inference:
-            # 進行推論
-            coords_list = self.process_image(frame)
-            self.get_logger().info(f"推論結果已發布到 /removed_cords: {coords_list}")
-            self.need_inference = False
+        # 進行推論
+        coords_list = self.process_image(frame)
+        
+        # 推論完成後，禁止下次推論，等待批次完成信號
+        self.need_inference = False
+        #self.get_logger().info(f"推論結果已發布到 /removed_cords: {coords_list}")
 
-    def save_annotated_image(self, annotated_frame, coords_list):
-        """儲存帶有檢測結果的圖片"""
-        try:
-            # 生成時間戳記文件名
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # 精確到毫秒
-            filename = f"yolo_detection_{timestamp}.jpg"
-            filepath = os.path.join(self.data_path, filename)
-            
-            # 儲存圖片
-            cv2.imwrite(filepath, annotated_frame)
-            
-            # 記錄儲存資訊
-            coords_str = ", ".join([f"({coords_list[i]}, {coords_list[i+1]})" for i in range(0, len(coords_list), 2)])
-            self.get_logger().info(f"已儲存檢測結果圖片: {filename}, 檢測到 {len(coords_list)//2} 個作物, 座標: {coords_str}")
-            
-        except Exception as e:
-            self.get_logger().error(f"儲存圖片失敗: {e}")
+    # 移除圖片儲存方法
 
-    def execution_complete_callback(self, msg):
-        """當收到 delta_execution_complete 時觸發推論"""
-        if msg.data:
-            self.get_logger().info("收到執行完成信號，下次收到影像時進行推論...")
-            self.need_inference = True
+    # 移除完成狀態回調方法
 
 
 def main(args=None):
