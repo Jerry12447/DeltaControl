@@ -149,7 +149,7 @@ class DeltaFirmwareMotion:
         self.mm_per_arc_segment = 1.0     # 圓弧插值每段長度（mm）
         
         # 虛擬環境參數
-        self.control_frequency = 200.0    # 控制頻率 200Hz
+        self.control_frequency = 100.0    # 控制頻率決定軌跡平滑程度
         self.max_velocity = 50.0          # 最大速度 mm/s
         
         # 夾爪控制參數
@@ -180,21 +180,21 @@ class DeltaFirmwareMotion:
         return True
     
     def calculate_cartesian_distance(self, point1, point2):
-        """計算兩點間的笛卡爾距離（參考實際韌體）"""
+        """計算兩點間的笛卡爾距離"""
         x_offset = point1.X - point2.X
         y_offset = point1.Y - point2.Y
         z_offset = point1.Z - point2.Z
         
         distance = math.sqrt(x_offset*x_offset + y_offset*y_offset + z_offset*z_offset)
         
-        # 如果距離很小，設為0（參考實際韌體）
+        # 如果距離很小，設為0
         if distance < 0.2 and distance > -0.2:
             distance = 0
             
         return distance
     
     def linear_interpolate(self, start_point, end_point, t):
-        """線性插值計算中間點（參考實際韌體）"""
+        """線性插值計算中間點"""
         interpolated_point = Point()
         interpolated_point.X = start_point.X - ((start_point.X - end_point.X) * t)
         interpolated_point.Y = start_point.Y - ((start_point.Y - end_point.Y) * t)
@@ -203,7 +203,7 @@ class DeltaFirmwareMotion:
     
     
     def g1_motion(self, x, y, z, velocity=None):
-        """G1線性移動（參考實際韌體G1實現）"""
+        """G1線性移動"""
         if velocity is None:
             velocity = self.max_velocity
             
@@ -221,7 +221,7 @@ class DeltaFirmwareMotion:
         return True
     
     def linear_interpolation_motion(self, start_point, target_point, velocity):
-        """線性插值運動（參考實際韌體LinearInterpolation實現）"""
+        """線性插值運動"""
         # 1. 計算笛卡爾距離
         distance = self.calculate_cartesian_distance(start_point, target_point)
         
@@ -286,7 +286,7 @@ class DeltaFirmwareMotion:
             )
         
         total_time = total_distance / velocity
-        dt = 1.0 / self.control_frequency  # 200Hz控制週期
+        dt = 1.0 / self.control_frequency  
         
         # 生成時間序列的軌跡點
         time_sequence = np.linspace(0, total_time, int(total_time * self.control_frequency) + 1)
