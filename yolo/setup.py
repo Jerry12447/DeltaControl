@@ -33,7 +33,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'yoloboundingbox = yolo.yoloboundingbox:main',
+            'thinning_algorithm = yolo.thinning_algorithm:main',
+            'single_frame_detection = yolo.single_frame_detection:main',
         ],
     },
 )

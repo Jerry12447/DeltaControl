@@ -17,8 +17,9 @@ ros2 launch delta_robot_isaacsim delta_robot.launch.py
 # 啟動視覺辨識節點
 ros2 launch yolo yolo_detection.launch.py
 
-# 發送移除像素座標(只有編譯手臂控制功能包匙時使用)
-ros2 topic pub /removed_cords std_msgs/msg/UInt16MultiArray "{
+# 發送移除像素座標（支持小數點座標）
+# 格式：Float32MultiArray，每個點為 (x, y) 座標對
+ros2 topic pub /removed_cords std_msgs/msg/Float32MultiArray "{
   layout: {
     dim: [
       {label: 'group', size: 6, stride: 12},
@@ -26,7 +27,19 @@ ros2 topic pub /removed_cords std_msgs/msg/UInt16MultiArray "{
     ],
     data_offset: 0
   },
-  data: [500, 360, 640, 360, 780, 360, 640, 120, 640, 360, 640, 480]
+  data: [500.0, 360.0, 640.0, 360.0, 780.0, 360.0, 640.0, 120.0, 640.0, 360.0, 640.0, 480.0]
+}" --once
+
+# 使用精確小數點座標的示例（例如從相機標定獲得的座標）
+ros2 topic pub /removed_cords std_msgs/msg/Float32MultiArray "{
+  layout: {
+    dim: [
+      {label: 'group', size: 4, stride: 8},
+      {label: 'coordinate', size: 2, stride: 2}
+    ],
+    data_offset: 0
+  },
+  data: [210.70, 248.50, 496.00, 247.50, 210.60, 420.50, 497.50, 419.60]
 }" --once
 ```
 
