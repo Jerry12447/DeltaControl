@@ -31,9 +31,9 @@ class PositionManager:
     
     def __init__(self):
         # 待命位置座標 
-        self.standby_position = Point(300.0, 300.0, -600.0)
+        self.standby_position = Point(300.0, 300.0, -700.0)
         # 丟棄位置座標 
-        self.drop_position = Point(300.0, -300.0, -700.0)
+        self.drop_position = Point(300.0, -300.0, -800.0)
     
     def get_standby_position(self):
         """獲取待命位置"""
@@ -156,7 +156,7 @@ class DeltaFirmwareMotion:
         self.current_gripper_angle = 0.0  # 當前夾爪角度（度）
         
         # 當前狀態
-        self.current_point = Point(0.0, 0.0, -650.0)  # 當前位置
+        self.current_point = Point(0.0, 0.0, -600.0)  # 當前位置
         self.current_angle = Angle(
             math.radians(-38.0), 
             math.radians(-38.0), 
@@ -217,7 +217,7 @@ class DeltaFirmwareMotion:
     
     def m1_motion(self):
         """M1指令：關閉夾爪（45度）"""
-        self.current_gripper_angle = 45.0
+        self.current_gripper_angle = 32.0
         return True
     
     def linear_interpolation_motion(self, start_point, target_point, velocity):

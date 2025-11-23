@@ -39,11 +39,7 @@ class DeltaFirmwareAPI(Node):
             10
         )
         
-        
-        # 移除完成狀態發布相關代碼
-        
-        # 簡化批次控制
-        self.standby_position = (300.0, 300.0, -600.0)  # 待命位置
+        self.standby_position = (397.53, 195.66, -700.0)  # 待命位置
         
         # 控制參數
         self.default_velocity = 200.0  # 預設速度 100 mm/s
@@ -112,7 +108,7 @@ class DeltaFirmwareAPI(Node):
                 self.send_g1_and_m_commands(x, y, z, gripper_state, action_name)
             
             # 添加丟棄位置（使用固定高度）
-            self.send_g1_and_m_commands(300.0, -300.0, -700.0, 0, "丟棄位置")
+            self.send_g1_and_m_commands(170.34, -299.14, -700.0, 0, "丟棄位置")
             
             # 檢查是否為最後一個移除點
             if target_idx == num_targets - 1:

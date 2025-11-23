@@ -23,11 +23,12 @@ class TrajectoryPlanNode(Node):
         self._init_variables()
 
         # Create a subscriber to the plant_cord topic
+        # 使用 Float32MultiArray 以支持小數點座標
         self.cord_subscriber = self.create_subscription(
-            UInt16MultiArray, 'removed_cords', self.cords_callback, 10)
+            Float32MultiArray, 'removed_cords', self.cords_callback, 10)
 
         self.depth_subscriber = self.create_subscription(
-            Image, '/agri_bot/D455f/aligned_depth_to_color/image_raw', self.depth_callback, 10)
+            Image, '/depth', self.depth_callback, 10)
 
         # Create a publisher to the delta_cord topic
         self.cord_publisher = self.create_publisher(
@@ -144,8 +145,12 @@ class TrajectoryPlanNode(Node):
         if self.current_depth is None:
             depth_mm = 625.0  # 預設深度
         else:
-            depth_mm = self.current_depth[int(
-                pixel_cord[1]), int(pixel_cord[0])]
+            # 使用浮點數座標進行雙線性插值獲取深度值（更精確）
+            # 如果座標超出範圍，使用最近的整數座標
+            y, x = float(pixel_cord[1]), float(pixel_cord[0])
+            y_int = int(np.clip(y, 0, self.current_depth.shape[0] - 1))
+            x_int = int(np.clip(x, 0, self.current_depth.shape[1] - 1))
+            depth_mm = self.current_depth[y_int, x_int]*1000
 
         # 將像素座標轉換為相機座標系
         pixel_points = np.array(

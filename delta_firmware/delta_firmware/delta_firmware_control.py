@@ -227,7 +227,7 @@ class DeltaFirmwareController(Node):
         try:
             result = self.motion_controller.m1_motion()
             if result:
-                self.control_finger(45.0)
+                self.control_finger(33.0)
                 #self.get_logger().info("M1指令執行完成：夾爪關閉（45度）")
                 return True
             else:
@@ -359,19 +359,18 @@ class DeltaFirmwareController(Node):
             self.finger_joint_state.effort = [0.0]
             
             self.finger_pub.publish(self.finger_joint_state)
-            
-            #state_text = "閉合" if target_angle_degrees == 0 else "打開"
-            #self.get_logger().info(f"夾爪控制: {state_text} (角度: {target_angle_degrees}°)")
-            
             self.finger_state = target_angle_radians
 
     def startup_sequence(self):
-        """啟動序列：移動到待命位置"""
+        """啟動序列：移動到待命位置並初始化夾爪狀態"""
         if not self.startup_completed:
             self.get_logger().info("開始啟動序列：移動到待命位置...")
             
             if self.move_to_standby_position():
                 self.get_logger().info("成功移動到待命位置")
+                # 初始化夾爪狀態為打開（M0）
+                self.get_logger().info("初始化夾爪狀態：打開（M0）")
+                self.execute_m0_motion()
                 self.startup_completed = True
                 self.hold_mode = True
             else:
