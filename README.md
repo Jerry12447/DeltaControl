@@ -4,7 +4,7 @@
 cd ~/delta_robot_isaacsim
 colcon build                                        #編譯所有功能包
 colcon build --packages-select delta_robot_isaacsim #編譯手臂控制功能包
-colcon build --packages-select yolo                 #編譯視覺辨識功能包
+colcon build --packages-select plant_detection                 #編譯視覺辨識功能包
 source install/setup.bash
 ```
 ## 2. 使用方法
@@ -22,12 +22,12 @@ ros2 launch yolo yolo_detection.launch.py
 ros2 topic pub /removed_cords std_msgs/msg/Float32MultiArray "{
   layout: {
     dim: [
-      {label: 'group', size: 6, stride: 12},
+      {label: 'group', size: 5, stride: 10},
       {label: 'coordinate', size: 2, stride: 2}
     ],
     data_offset: 0
   },
-  data: [500.0, 360.0, 640.0, 360.0, 780.0, 360.0, 640.0, 120.0, 640.0, 360.0, 640.0, 480.0]
+  data: [862,406,505,458,759,501,773,619,572,214]
 }" --once
 
 # 使用精確小數點座標的示例（例如從相機標定獲得的座標）

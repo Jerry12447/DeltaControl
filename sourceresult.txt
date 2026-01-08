@@ -1,0 +1,152 @@
+檢測結果 (衝突數權重,距離權重)
+
+[plant_detection_node-1] === 檢測結果 (0.0,1.0)===
+[1] Crop: 中心點=(935, 356), 評估分數=0.000, 狀態=kept
+[2] Crop: 中心點=(800, 202), 評估分數=0.000, 狀態=kept
+[3] Crop: 中心點=(566, 370), 評估分數=1.000, 狀態=removed
+[4] Crop: 中心點=(454, 158), 評估分數=1.000, 狀態=removed
+[5] Crop: 中心點=(545, 189), 評估分數=1.000, 狀態=kept
+[6] Crop: 中心點=(738, 633), 評估分數=0.000, 狀態=kept
+[7] Crop: 中心點=(602, 566), 評估分數=0.152, 狀態=kept
+[8] Crop: 中心點=(724, 401), 評估分數=0.000, 狀態=kept
+[9] Crop: 中心點=(407, 506), 評估分數=1.000, 狀態=removed
+[10] Crop: 中心點=(392, 558), 評估分數=1.000, 狀態=kept
+[11] Crop: 中心點=(833, 497), 評估分數=0.000, 狀態=kept
+[12] Crop: 中心點=(908, 142), 評估分數=0.000, 狀態=kept
+[14] Crop: 中心點=(594, 482), 評估分數=1.000, 狀態=removed
+[15] Crop: 中心點=(711, 144), 評估分數=1.000, 狀態=removed
+[17] Crop: 中心點=(635, 83), 評估分數=0.083, 狀態=kept
+[22] Crop: 中心點=(470, 320), 評估分數=0.533, 狀態=kept
+[plant_detection_node-1] (566, 370)
+[plant_detection_node-1] (454, 158)
+[plant_detection_node-1] (407, 506)
+[plant_detection_node-1] (594, 482)
+[plant_detection_node-1] (711, 144)
+==================================================================================
+[plant_detection_node-1] === 檢測結果 (1.0,0.0)===
+[plant_detection_node-1] === 檢測結果 ===
+[1] Crop: 中心點=(935, 357), 評估分數=0.000, 狀態=kept
+[2] Crop: 中心點=(566, 370), 評估分數=1.000, 狀態=removed
+[3] Crop: 中心點=(800, 202), 評估分數=0.000, 狀態=kept
+[4] Crop: 中心點=(738, 633), 評估分數=0.000, 狀態=kept
+[5] Crop: 中心點=(454, 158), 評估分數=1.000, 狀態=removed
+[6] Crop: 中心點=(545, 189), 評估分數=1.000, 狀態=kept
+[7] Crop: 中心點=(602, 566), 評估分數=1.000, 狀態=kept
+[8] Crop: 中心點=(724, 401), 評估分數=0.000, 狀態=kept
+[9] Crop: 中心點=(406, 504), 評估分數=1.000, 狀態=removed
+[10] Crop: 中心點=(833, 496), 評估分數=0.000, 狀態=kept
+[11] Crop: 中心點=(392, 559), 評估分數=1.000, 狀態=kept
+[12] Crop: 中心點=(908, 142), 評估分數=0.000, 狀態=kept
+[14] Crop: 中心點=(593, 475), 評估分數=1.000, 狀態=removed
+[15] Crop: 中心點=(711, 144), 評估分數=1.000, 狀態=removed
+[17] Crop: 中心點=(635, 83), 評估分數=0.000, 狀態=kept
+[22] Crop: 中心點=(469, 320), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] (566, 370)
+[plant_detection_node-1] (454, 158)
+[plant_detection_node-1] (406, 504)
+[plant_detection_node-1] (593, 475)
+[plant_detection_node-1] (711, 144)
+=====================================================================================
+[plant_detection_node-1] === 檢測結果(0.6,0.4) ===
+[1] Crop: 中心點=(935, 356), 評估分數=0.000, 狀態=kept
+[2] Crop: 中心點=(566, 370), 評估分數=1.000, 狀態=removed
+[3] Crop: 中心點=(800, 202), 評估分數=0.000, 狀態=kept
+[4] Crop: 中心點=(545, 189), 評估分數=1.000, 狀態=removed
+[5] Crop: 中心點=(454, 158), 評估分數=1.000, 狀態=kept
+[6] Crop: 中心點=(739, 630), 評估分數=0.000, 狀態=kept
+[7] Crop: 中心點=(602, 566), 評估分數=0.064, 狀態=kept
+[8] Crop: 中心點=(723, 401), 評估分數=0.000, 狀態=kept
+[9] Crop: 中心點=(406, 504), 評估分數=1.000, 狀態=removed
+[10] Crop: 中心點=(392, 559), 評估分數=1.000, 狀態=kept
+[11] Crop: 中心點=(833, 496), 評估分數=0.000, 狀態=kept
+[12] Crop: 中心點=(908, 142), 評估分數=0.000, 狀態=kept
+[14] Crop: 中心點=(594, 482), 評估分數=1.000, 狀態=removed
+[16] Crop: 中心點=(711, 144), 評估分數=1.000, 狀態=removed
+[17] Crop: 中心點=(635, 83), 評估分數=0.033, 狀態=kept
+[22] Crop: 中心點=(469, 320), 評估分數=0.811, 狀態=kept
+[plant_detection_node-1] (566, 370)
+[plant_detection_node-1] (545, 189)
+[plant_detection_node-1] (406, 504)
+[plant_detection_node-1] (594, 482)
+[plant_detection_node-1] (711, 144)
+===============================================================
+[plant_detection_node-1] === 檢測結果 (0.2,0.8)===
+[plant_detection_node-1] [1] Crop: 中心點=(494, 159), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [2] Crop: 中心點=(484, 67), 評估分數=0.190, 狀態=kept
+[plant_detection_node-1] [3] Crop: 中心點=(647, 99), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [4] Crop: 中心點=(345, 541), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [5] Crop: 中心點=(877, 629), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [6] Crop: 中心點=(562, 637), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [7] Crop: 中心點=(456, 387), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [8] Crop: 中心點=(893, 352), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [9] Crop: 中心點=(712, 186), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [10] Crop: 中心點=(832, 133), 評估分數=0.568, 狀態=kept
+[plant_detection_node-1] [11] Crop: 中心點=(915, 440), 評估分數=0.152, 狀態=kept
+[plant_detection_node-1] [12] Crop: 中心點=(594, 502), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [13] Crop: 中心點=(332, 383), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [14] Crop: 中心點=(845, 245), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [15] Crop: 中心點=(686, 480), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [16] Crop: 中心點=(658, 650), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [17] Crop: 中心點=(735, 309), 評估分數=0.406, 狀態=kept
+[plant_detection_node-1] [18] Crop: 中心點=(588, 363), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [19] Weed: 中心點=(0, 0), 信心值=0.538
+[plant_detection_node-1] [20] Crop: 中心點=(392, 194), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [21] Crop: 中心點=(420, 600), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [22] Crop: 中心點=(633, 246), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [23] Crop: 中心點=(836, 571), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] 
+[plant_detection_node-1] === 疏除統計 ===
+[plant_detection_node-1] 總作物數: 22
+[plant_detection_node-1] 保留: 13, 移除: 9, 保留率: 59.1%
+[plant_detection_node-1] 
+[plant_detection_node-1] === 可移除的作物座標 ===
+[plant_detection_node-1] (494, 159)
+[plant_detection_node-1] (877, 629)
+[plant_detection_node-1] (562, 637)
+[plant_detection_node-1] (893, 352)
+[plant_detection_node-1] (712, 186)
+[plant_detection_node-1] (594, 502)
+[plant_detection_node-1] (845, 245)
+[plant_detection_node-1] (420, 600)
+[plant_detection_node-1] (633, 246)
+[plant_detection_node-1] ==================================================
+
+[plant_detection_node-1] === 檢測結果(0.8,0.2) ===
+[plant_detection_node-1] [1] Crop: 中心點=(494, 159), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [2] Crop: 中心點=(486, 70), 評估分數=0.056, 狀態=kept
+[plant_detection_node-1] [3] Crop: 中心點=(647, 99), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [4] Crop: 中心點=(345, 542), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [5] Crop: 中心點=(455, 387), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [6] Crop: 中心點=(877, 629), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [7] Crop: 中心點=(562, 636), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [8] Crop: 中心點=(915, 440), 評估分數=0.039, 狀態=kept
+[plant_detection_node-1] [9] Crop: 中心點=(712, 186), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [10] Crop: 中心點=(832, 132), 評估分數=0.891, 狀態=kept
+[plant_detection_node-1] [11] Crop: 中心點=(893, 352), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [12] Crop: 中心點=(845, 245), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [13] Crop: 中心點=(594, 502), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [14] Crop: 中心點=(332, 383), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [15] Crop: 中心點=(686, 480), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [16] Crop: 中心點=(658, 650), 評估分數=1.000, 狀態=kept
+[plant_detection_node-1] [17] Crop: 中心點=(735, 309), 評估分數=0.852, 狀態=kept
+[plant_detection_node-1] [18] Crop: 中心點=(588, 363), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [19] Crop: 中心點=(420, 601), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [20] Crop: 中心點=(392, 194), 評估分數=0.000, 狀態=kept
+[plant_detection_node-1] [21] Weed: 中心點=(0, 0), 信心值=0.457
+[plant_detection_node-1] [22] Crop: 中心點=(633, 246), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] [23] Crop: 中心點=(836, 571), 評估分數=1.000, 狀態=removed
+[plant_detection_node-1] 
+[plant_detection_node-1] === 疏除統計 ===
+[plant_detection_node-1] 總作物數: 21
+[plant_detection_node-1] 保留: 13, 移除: 8, 保留率: 61.9%
+[plant_detection_node-1] 
+[plant_detection_node-1] === 可移除的作物座標 ===
+[plant_detection_node-1] (494, 159)
+[plant_detection_node-1] (562, 636)
+[plant_detection_node-1] (712, 186)
+[plant_detection_node-1] (893, 352)
+[plant_detection_node-1] (845, 245)
+[plant_detection_node-1] (594, 502)
+[plant_detection_node-1] (420, 601)
+[plant_detection_node-1] (633, 246)
+[plant_detection_node-1] ==================================================

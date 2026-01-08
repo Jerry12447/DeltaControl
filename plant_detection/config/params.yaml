@@ -4,19 +4,17 @@ plant_detection_node:
     image_topic: '/rgb'
     
     # YOLO 模型路徑（留空則使用預設路徑）
-    model_path: './plant_detection/model/best3.pt'
+    model_path: './plant_detection/model/best4.pt'
     
     # YOLO 檢測參數
-    conf_threshold: 0.29    # 信心度閾值 (0.0-1.0)
-    iou_threshold: 0.45     # IoU 閾值 (0.0-1.0)
+    conf_threshold: 0.7    # 信心度閾值 (0.0-1.0)
+    iou_threshold: 0.5     # IoU 閾值 (0.0-1.0)
     
     # 疏除演算法參數 
     enable_thinning: true                    # 是否啟用疏除演算法
     thinning_threshold_cm: 12.0              # 疏苗距離（公分）
     pixel_to_cm_original: 0.09874           # (1280*720)下的像素到公分轉換
     pixel_to_cm_new: 0.1657           # (640*640)下的像素到公分轉換
-    hybrid_weight_conflict: 0.6              # Hybrid 策略：衝突數權重 (0-1)
-    hybrid_weight_distance: 0.4               # Hybrid 策略：距離權重 (0-1)
 
 plant_detection_video_node:
   ros__parameters:
@@ -38,6 +36,4 @@ plant_detection_video_node:
     thinning_threshold_cm: 12.0              # 疏苗距離（公分）
     pixel_to_cm_original: 0.09874           # (1280*720)下的像素到公分轉換
     pixel_to_cm_new: 0.1657           # (640*640)下的像素到公分轉換
-    hybrid_weight_conflict: 0.6              # Hybrid 策略：衝突數權重 (0-1)
-    hybrid_weight_distance: 0.4               # Hybrid 策略：距離權重 (0-1)
 
